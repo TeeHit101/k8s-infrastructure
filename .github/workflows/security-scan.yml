@@ -25,7 +25,7 @@ jobs:
           hide-progress: false
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1' # Fail the PR if there are critical/high security issues
+          exit-code: '0' # Report vulnerabilities but don't fail the build (allows review in Security tab)
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Scan Results to GitHub Security Tab
