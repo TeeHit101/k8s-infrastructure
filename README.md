@@ -1,12 +1,13 @@
 # Kubernetes GitOps Infrastructure for k3s Homelab
 
-Detta GitOps-arkiv är utformat för att hantera din k3s-hemlabbmiljö (med 1 Master-nod och 2 Worker-noder) med hjälp av **FluxCD** och **Kustomize**. Den här strukturen är renodlad för **infrastruktur** ("infrastructure-only repo"), precis som i stora organisationer. Applikationer körs och underhålls i sina egna separata Git-arkiv.
+Detta GitOps-arkiv är utformat för att hantera din k3s-hemlabbmiljö (med 1 Master-nod och 2 Worker-noder) med hjälp av **Flux Operator** och **Kustomize**. Den här strukturen är renodlad för **infrastruktur** ("infrastructure-only repo"), precis som i stora organisationer. Applikationer körs och underhålls i sina egna separata Git-arkiv.
 
 ## Arkitektur & Mappstruktur
 
 Alla baskomponenter är helt fristående ("self-contained"). Varje modulmapp innehåller sitt eget `Namespace`, sin egen `HelmRepository` (källa) samt sin `HelmRelease` (installation) eller manifest:
 
 - **`clusters/base/`**: Innehåller de gemensamma modulerna.
+  - **`flux-operator/`**: **Flux Operator**. Driftsätter operatören som hanterar hela livscykeln för Flux på klustret.
   - **`ingress/`**: Nginx Ingress Controller för extern trafik.
   - **`metallb/`**: MetalLB L2 LoadBalancer för lokala IP-adresser.
   - **`cert-manager/`**: Certifikathantering med Let's Encrypt Staging och Production `ClusterIssuers`.
@@ -17,7 +18,7 @@ Alla baskomponenter är helt fristående ("self-contained"). Varje modulmapp inn
   - **`logging/`**: **Grafana Loki & Promtail** för centraliserad logghantering. Promtail läser loggar från noderna och skickar dem till Loki, som sparar dem persistent i Longhorn.
   - **`network-policies/`**: **Nätverksisolering**. Innehåller [namespace-isolation.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/network-policies/namespace-isolation.yaml) som implementerar en "Default Deny Ingress" (stoppar all inkommande trafik till poddar som standard) och tillåter trafik enbart från `ingress-nginx`.
   - **`system-upgrade-controller/`**: **Automatiska klusteruppgraderingar**. Innehåller planer ([plans.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/system-upgrade-controller/plans.yaml)) för att utföra rullande uppgraderingar av k3s på dina master- och worker-noder.
-- **`clusters/staging/`**, **`clusters/prod/`**, **`clusters/test/`**: Miljöspecifika overlays som ärver från `base` och lägger till miljöspecifika konfigurationer. Mapparna innehåller även `tenant-sync.yaml` som driftsätter alla namespaces och RBAC-roller för dina utvecklingsteam.
+- **`clusters/staging/`**, **`clusters/prod/`**, **`clusters/test/`**: Miljöspecifika overlays som ärver från `base` och lägger till miljöspecifika konfigurationer. Mapparna innehåller även `tenant-sync.yaml` som driftsätter alla namespaces och RBAC-roller för dina utvecklingsteam, samt `flux-instance.yaml` som är den deklarativa konfigurationen för att starta din Flux-agent.
 - **`tenant/`**:
   - **`tenant-a/`**: En aktiv demo av hur du förbereder multi-tenant isolering för dina externa applikationer. Innehåller [namespace.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/tenant/tenant-a/namespace.yaml) och [rbac.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/tenant/tenant-a/rbac.yaml) som skapar en isolerad miljö där en tenant enbart har admin-rättigheter inom sitt eget namnutrymme.
 - **`AGENTS.md`**: Innehåller regler ([AGENTS.md](file:///mnt/c/Users/TeeHit/k8s-infrastructure/AGENTS.md)) för framtida AI-kodningsassistenter som arbetar med detta projekt för att säkerställa att arkitekturen och säkerhetsreglerna bevaras.
@@ -37,26 +38,23 @@ Alla baskomponenter är helt fristående ("self-contained"). Varje modulmapp inn
 
 ---
 
-## Bootstrapa klustret med FluxCD
+## Bootstrapa klustret med Flux Operator
 
-När ditt Git-arkiv har pushats till din Git-leverantör (t.ex. GitHub), kan du bootstrapa Flux på ditt kluster.
+För att bootstrapa ditt kluster helt deklarativt utan att köra det manuella `flux bootstrap`-kommandot på din lokala maskin:
 
-### Exempel: Bootstrap av Staging-miljön
-
-Kör följande kommando på din master-nod (eller maskin med access till ditt k3s-kluster):
-
+### 1. Installera Flux Operator
+Kör följande kommando på din master-nod (eller maskin med kubectl-access till klustret) för att installera operatören i namnutrymmet `flux-system`:
 ```bash
-flux bootstrap github \
-  --owner=<ditt-github-användarnamn> \
-  --repository=k8s-infrastructure \
-  --branch=main \
-  --path=./clusters/staging \
-  --personal
+helm install flux-operator oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator \
+  --namespace flux-system \
+  --create-namespace \
+  --wait
 ```
 
-### Vad händer under bootstrap?
-1. Flux installerar sina egna controller-resurser i namnutrymmet `flux-system`.
-2. Flux skapar filerna i `clusters/staging/flux-system/` i ditt repo för att bibehålla sync-statusen.
-3. Flux börjar läsa `clusters/staging/kustomization.yaml`, vilket i sin ur:
-   - Startar synkroniseringen av **Infrastruktur** (`infra-sync.yaml` -> `./clusters/staging/infrastructure`).
-   - Startar synkroniseringen av **Tenants** (`tenant-sync.yaml` -> `./tenant`) så fort infrastrukturen är redo. Det sätter upp alla namespaces och RBAC-rättigheter.
+### 2. Driftsätt din FluxInstance
+När operatören är igång på klustret kan du starta synkroniseringen genom att tillämpa `flux-instance.yaml` för din miljö (t.ex. `test`):
+```bash
+kubectl apply -f clusters/test/flux-instance.yaml
+```
+
+Operatören kommer nu automatiskt att installera Flux-kontrollerna i klustret, ansluta till ditt Git-arkiv och börja synkronisera all infrastruktur och dina tenants i rätt ordning!

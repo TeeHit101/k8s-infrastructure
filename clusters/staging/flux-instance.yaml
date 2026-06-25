@@ -1,0 +1,18 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  distribution:
+    version: "2.x"
+  sync:
+    kind: GitRepository
+    # Replace this with your actual GitHub repository URL
+    url: "https://github.com/TeeHit101/k8s-infrastructure.git"
+    ref:
+      branch: "main"
+    path: "./clusters/staging"
+    # If the repository is private, uncomment the block below and create the secret
+    # secretRef:
+    #   name: flux-git-deploy
