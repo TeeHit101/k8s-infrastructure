@@ -16,7 +16,7 @@ jobs:
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@2ba527d4d055ab63514ba50a99456fc35684947f # v2.1.0
         with:
-          kustomize-version: "v5.4.1"
+          kustomize-version: "5.4.1" # Removed 'v' prefix
 
       - name: Validate Staging Environment
         run: |
