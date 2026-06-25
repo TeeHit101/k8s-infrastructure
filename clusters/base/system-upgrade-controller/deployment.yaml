@@ -60,10 +60,23 @@ spec:
         upgrade.cattle.io/controller: system-upgrade-controller
     spec:
       serviceAccountName: system-upgrade
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: system-upgrade-controller
           image: rancher/system-upgrade-controller:v0.13.4
           imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: SYSTEM_UPGRADE_CONTROLLER_NAME
               value: system-upgrade-controller

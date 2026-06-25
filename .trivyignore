@@ -1,0 +1,17 @@
+# --- GitOps Platform Security Exceptions (.trivyignore) ---
+
+# KSV-0111: User with admin access in tenant-a/rbac.yaml
+# Rationale: This is an intentional demo showing how to delegate admin rights within a single namespace to a tenant.
+KSV-0111
+
+# KSV-0023: hostPath volumes mounted in system-upgrade-controller
+# Rationale: The System Upgrade Controller must mount host paths (/run) to interact with node systemd and k3s sockets for OS upgrades.
+KSV-0023
+
+# KSV-0048: Manage Kubernetes workloads and pods (system-upgrade-controller ClusterRole)
+# Rationale: The controller requires cluster-wide permissions to list, watch, and evict pods/jobs to safely drain nodes during upgrades.
+KSV-0048
+
+# KSV-0125: Restrict container images to trusted registries
+# Rationale: Pulls official rancher/system-upgrade-controller images from Docker Hub.
+KSV-0125
