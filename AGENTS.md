@@ -36,3 +36,10 @@ Den här filen innehåller regler och riktlinjer för framtida AI-assistenter so
   kustomize build tenant > /dev/null
   ```
   Detta motsvarar CI-pipelinen och fångar upp eventuella referensfel.
+
+---
+
+## 5. Arbetsflöde och Pull Requests
+* **Feature Branches**: Alla nya funktioner, ändringar eller buggfixar ska utvecklas på en egen, dedikerad branch (t.ex. `feat/new-component` eller `fix/security-issue`). Direktincheckning (push) till `main`-branchen är inte tillåten.
+* **Pull Requests (PR)**: Skapa alltid en Pull Request mot `main`-branchen för att låta GitHub Actions-pipelinen (`kustomize-lint` och `security-scan`) validera ändringarna före merge.
+
