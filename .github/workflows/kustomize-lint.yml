@@ -1,0 +1,39 @@
+name: GitOps Kustomize Lint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@2ba527d4d055ab63514ba50a99456fc35684947f # v2.1.0
+        with:
+          kustomize-version: "v5.4.1"
+
+      - name: Validate Staging Environment
+        run: |
+          echo "Building Staging overlay..."
+          kustomize build clusters/staging > /dev/null
+
+      - name: Validate Production Environment
+        run: |
+          echo "Building Production overlay..."
+          kustomize build clusters/prod > /dev/null
+
+      - name: Validate Test Environment
+        run: |
+          echo "Building Test overlay..."
+          kustomize build clusters/test > /dev/null
+
+      - name: Validate Tenants
+        run: |
+          echo "Building Tenant manifests..."
+          kustomize build tenant > /dev/null

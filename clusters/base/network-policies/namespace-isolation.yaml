@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: default
+spec:
+  podSelector: {} # Selects all pods in the namespace
+  policyTypes:
+    - Ingress # Applies to all incoming traffic
+  # Since ingress is empty, all incoming traffic is blocked by default
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-nginx-only
+  namespace: default
+spec:
+  podSelector: {} # Selects all pods in the namespace
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx # Allow traffic only from ingress-nginx controller
+  policyTypes:
+    - Ingress

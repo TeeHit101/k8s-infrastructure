@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-grafana-dashboard
+  namespace: monitoring
+  labels:
+    # This label triggers the Grafana sidecar to automatically import the dashboard
+    grafana_dashboard: "1"
+data:
+  sample-dashboard.json: |
+    {
+      "id": null,
+      "title": "Homelab Quick Status",
+      "tags": ["homelab"],
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "version": 0,
+      "panels": [
+        {
+          "type": "row",
+          "title": "Cluster Metrics",
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Cluster Node CPU Usage",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 1 },
+          "targets": [
+            {
+              "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) by (node)",
+              "legendFormat": "{{node}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Cluster Node Memory Usage",
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
+          "targets": [
+            {
+              "expr": "node_memory_Active_bytes",
+              "legendFormat": "{{instance}}",
+              "refId": "A"
+            }
+          ]
+        }
+      ]
+    }

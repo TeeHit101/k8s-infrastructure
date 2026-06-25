@@ -1,0 +1,36 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  security-events: write # Required to upload SARIF results to GitHub Security tab
+
+jobs:
+  trivy:
+    name: Trivy IaC Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run Trivy Vulnerability Scanner (IaC)
+        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
+        with:
+          scan-type: 'config'
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '1' # Fail the PR if there are critical/high security issues
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Scan Results to GitHub Security Tab
+        uses: github/codeql-action/upload-sarif@eb055d739abdc2e8de2e5f4ba1a8b246daa779aa # v3.26.0
+        # Ensure this runs even if the previous step failed due to security issues found
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
