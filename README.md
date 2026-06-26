@@ -1,6 +1,6 @@
 # Kubernetes GitOps Infrastructure for k3s Homelab
 
-Detta GitOps-arkiv är utformat för att hantera din k3s-hemlabbmiljö (med 1 Master-nod och 2 Worker-noder) med hjälp av **Flux Operator** och **Kustomize**. Den här strukturen är renodlad för **infrastruktur** ("infrastructure-only repo"), precis som i stora organisationer. Applikationer körs och underhålls i sina egna separata Git-arkiv.
+Detta GitOps-arkiv är utformat för att hantera min k3s-hemlabbmiljö (med 1 Master-nod och 2 Worker-noder) med hjälp av **Flux Operator** och **Kustomize**. Den här strukturen är renodlad för **infrastruktur** ("infrastructure-only repo"), precis som i stora organisationer. Applikationer körs och underhålls i sina egna separata Git-arkiv.
 
 ## Arkitektur & Mappstruktur
 
