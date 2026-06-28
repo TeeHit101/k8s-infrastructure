@@ -10,8 +10,7 @@ spec:
     kind: GitRepository
     # Replace this with your actual GitHub repository URL
     url: "https://github.com/TeeHit101/k8s-infrastructure.git"
-    ref:
-      branch: "main"
+    ref: "refs/heads/main"
     path: "./clusters/staging"
     # If the repository is private, uncomment the block below and create the secret
     # secretRef:
