@@ -21,5 +21,7 @@ spec:
   values:
     defaultSettings:
       defaultReplicaCount: 2
+      storageReservedPercentageForDefaultDisk: 15
+      storageMinimalAvailablePercentage: 15
     persistence:
       defaultClassReplicaCount: 2
