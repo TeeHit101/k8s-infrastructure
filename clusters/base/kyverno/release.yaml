@@ -21,9 +21,9 @@ spec:
   values:
     policyReportsCleanup:
       image:
-        registry: registry.k8s.io
-        repository: kubectl
-        tag: v1.28.5
+        registry: ghcr.io
+        repository: bitnami/kubectl
+        tag: 1.28.5
     cleanupJobs:
       admissionReports:
         securityContext:
@@ -38,9 +38,9 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         image:
-          registry: registry.k8s.io
-          repository: kubectl
-          tag: v1.28.5
+          registry: ghcr.io
+          repository: bitnami/kubectl
+          tag: 1.28.5
       clusterAdmissionReports:
         securityContext:
           runAsNonRoot: true
@@ -54,6 +54,6 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         image:
-          registry: registry.k8s.io
-          repository: kubectl
-          tag: v1.28.5
+          registry: ghcr.io
+          repository: bitnami/kubectl
+          tag: 1.28.5
