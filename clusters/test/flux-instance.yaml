@@ -6,6 +6,7 @@ metadata:
 spec:
   distribution:
     version: "2.x"
+    registry: "ghcr.io/fluxcd"
   sync:
     kind: GitRepository
     # Replace this with your actual GitHub repository URL
