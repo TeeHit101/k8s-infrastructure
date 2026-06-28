@@ -18,3 +18,37 @@ spec:
     crds: CreateReplace
   upgrade:
     crds: CreateReplace
+  values:
+    cleanupJobs:
+      admissionReports:
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        image:
+          registry: registry.k8s.io
+          repository: kubectl
+          tag: v1.28.5
+      clusterAdmissionReports:
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+          runAsGroup: 10001
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        image:
+          registry: registry.k8s.io
+          repository: kubectl
+          tag: v1.28.5
