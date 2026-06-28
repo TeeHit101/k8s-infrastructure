@@ -6,7 +6,7 @@ metadata:
 spec:
   # Adjust this IP range to match your homelab/multipass network subnet for production
   addresses:
-    - 192.168.64.221-192.168.64.240
+    - 10.207.9.140-10.207.9.159
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
