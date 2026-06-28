@@ -19,6 +19,7 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    deploymentMode: SingleBinary
     loki:
       auth_enabled: false
       commonConfig:
