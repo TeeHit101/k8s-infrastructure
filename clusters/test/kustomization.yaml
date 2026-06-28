@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - flux-instance.yaml
   - infra-sync.yaml
+  - infra-configs-sync.yaml
   - tenant-sync.yaml

@@ -1,13 +1,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prod-tenants
+  name: staging-infrastructure-configs
   namespace: flux-system
 spec:
   interval: 10m0s
   dependsOn:
-    - name: prod-infrastructure-configs
-  path: ./tenant
+    - name: staging-infrastructure
+  path: ./clusters/staging/infrastructure-configs
   prune: true
   sourceRef:
     kind: GitRepository

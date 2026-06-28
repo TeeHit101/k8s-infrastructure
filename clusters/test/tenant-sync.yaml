@@ -6,7 +6,7 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
-    - name: test-infrastructure
+    - name: test-infrastructure-configs
   path: ./tenant
   prune: true
   sourceRef:
