@@ -29,4 +29,4 @@ spec:
       persistence:
         enabled: true
         storageClass: longhorn
-        size: 20Gi
+        size: 5Gi
