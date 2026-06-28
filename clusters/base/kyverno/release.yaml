@@ -21,8 +21,8 @@ spec:
   values:
     policyReportsCleanup:
       image:
-        registry: ghcr.io
-        repository: bitnami/kubectl
+        registry: docker.io
+        repository: bitnamilegacy/kubectl
         tag: 1.28.5
     cleanupJobs:
       admissionReports:
@@ -38,8 +38,8 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         image:
-          registry: ghcr.io
-          repository: bitnami/kubectl
+          registry: docker.io
+          repository: bitnamilegacy/kubectl
           tag: 1.28.5
       clusterAdmissionReports:
         securityContext:
@@ -54,6 +54,6 @@ spec:
           seccompProfile:
             type: RuntimeDefault
         image:
-          registry: ghcr.io
-          repository: bitnami/kubectl
+          registry: docker.io
+          repository: bitnamilegacy/kubectl
           tag: 1.28.5
