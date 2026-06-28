@@ -1,0 +1,45 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+        args: ['--markdown-linebreak-ext=md']
+
+      - id: end-of-file-fixer
+        name: Making sure files end with newline
+
+      - id: check-yaml
+        name: Ensuring YAML is valid
+        args: ['--allow-multiple-documents']
+
+      - id: check-json
+        name: Ensuring JSON is valid
+
+      - id: check-added-large-files
+        name: Prevent adding large files
+        args: ['--maxkb=500']
+
+      - id: check-merge-conflict
+        name: Prevent merge conflict markers
+
+      - id: detect-private-key
+        name: Detecting private keys
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      - id: remove-crlf
+        name: Replacing CRLF with LF
+
+      - id: remove-tabs
+        args: [--whitespaces-count, '2']
+        name: "Replacing tabs with spaces"
+        exclude: '\.alloy$'
+
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: '2.7.3'
+    hooks:
+      - id: editorconfig-checker
+        alias: ec
+        name: Making sure files adhere to editorconfig
