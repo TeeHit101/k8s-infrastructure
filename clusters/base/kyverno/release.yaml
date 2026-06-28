@@ -19,6 +19,11 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    policyReportsCleanup:
+      image:
+        registry: registry.k8s.io
+        repository: kubectl
+        tag: v1.28.5
     cleanupJobs:
       admissionReports:
         securityContext:
