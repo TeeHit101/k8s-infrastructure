@@ -80,7 +80,7 @@ spec:
           env:
             - name: SYSTEM_UPGRADE_CONTROLLER_NAME
               value: system-upgrade-controller
-            - name: SYSTEM_UPGRADE_NAMESPACE
+            - name: SYSTEM_UPGRADE_CONTROLLER_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
