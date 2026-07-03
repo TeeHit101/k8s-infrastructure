@@ -43,6 +43,12 @@ spec:
           - resources:
               kinds:
                 - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - longhorn-system
       validate:
         message: "Privileged containers are strictly forbidden in this cluster."
         pattern:
