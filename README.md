@@ -13,9 +13,9 @@ Alla baskomponenter är helt fristående ("self-contained"). Varje modulmapp inn
   - **`cert-manager/`**: Certifikathantering med Let's Encrypt Staging och Production `ClusterIssuers`.
   - **`external-secrets/`**: Synkronisering av externa secrets (från t.ex. Vault, 1Password).
   - **`kyverno/`**: Säkerhetspolicyer. Innehåller [policies.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/kyverno/policies.yaml) som validerar och blockerar privilegierade containrar samt granskar körning som `root` (Pod Security Standards).
-  - **`longhorn/`**: Distribuerad persistent lagring optimerad för 2 worker-noder (`defaultReplicaCount: 2`).
+  - **`ceph-csi/`**: Drivrutin för att ansluta klustret till ett externt persistent Ceph-lagringskluster (RBD) över nätverket.
   - **`monitoring/`**: Kube-Prometheus-Stack (Prometheus & Grafana) för övervakning.
-  - **`logging/`**: **Grafana Loki & Promtail** för centraliserad logghantering. Promtail läser loggar från noderna och skickar dem till Loki, som sparar dem persistent i Longhorn.
+  - **`logging/`**: **Grafana Loki & Promtail** för centraliserad logghantering. Promtail läser loggar från noderna och skickar dem till Loki, som sparar dem persistent i Ceph-klustret.
   - **`network-policies/`**: **Nätverksisolering**. Innehåller [namespace-isolation.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/network-policies/namespace-isolation.yaml) som implementerar en "Default Deny Ingress" (stoppar all inkommande trafik till poddar som standard) och tillåter trafik enbart från `ingress-nginx`.
   - **`system-upgrade-controller/`**: **Automatiska klusteruppgraderingar**. Innehåller planer ([plans.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/system-upgrade-controller/plans.yaml)) för att utföra rullande uppgraderingar av k3s på dina master- och worker-noder.
 - **`clusters/staging/`**, **`clusters/prod/`**, **`clusters/test/`**: Miljöspecifika overlays som ärver från `base` och lägger till miljöspecifika konfigurationer. Mapparna innehåller även `tenant-sync.yaml` som driftsätter alla namespaces och RBAC-roller för dina utvecklingsteam, samt `flux-instance.yaml` som är den deklarativa konfigurationen för att starta din Flux-agent.
@@ -27,10 +27,20 @@ Alla baskomponenter är helt fristående ("self-contained"). Varje modulmapp inn
 
 ## Förberedelser innan bootstrap
 
-1. **E-post för Let's Encrypt**:
+1. **Skapa Ceph-CSI Secret manuellt i klustret (Säkerhetshantering)**:
+   Eftersom känsliga nycklar inte ska sparas i klartext i Git, måste du skapa autentiseringshemligheten för ditt externa Ceph-kluster manuellt på din master-nod innan du bootstrapar:
+   ```bash
+   kubectl create namespace ceph-csi
+   kubectl create secret generic ceph-csi-rbd-secret \
+     --namespace ceph-csi \
+     --from-literal=userID="k3s" \
+     --from-literal=userKey="<DIN_CEPH_NYCKEL>"
+   ```
+
+2. **E-post för Let's Encrypt**:
    Uppdatera din e-postadress i [issuers.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/base/cert-manager/issuers.yaml) så att du kan ta emot certifikatnotiser från Let's Encrypt.
 
-2. **MetalLB IP-pooler**:
+3. **MetalLB IP-pooler**:
    Kontrollera och justera IP-intervallen för ditt hemnätverkssubnät i:
    - Staging: [metallb-config.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/staging/infrastructure/metallb-config.yaml)
    - Prod: [metallb-config.yaml](file:///mnt/c/Users/TeeHit/k8s-infrastructure/clusters/prod/infrastructure/metallb-config.yaml)
