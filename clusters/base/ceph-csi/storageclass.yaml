@@ -4,7 +4,7 @@ metadata:
   name: external-ceph-block
 provisioner: rbd.csi.ceph.com
 parameters:
-  clusterID: "YOUR_CEPH_FSID"
+  clusterID: "2bc249e8-7b57-40d3-b80e-741a2e4c8722"
   pool: k3s-pool
   imageFormat: "2"
   imageFeatures: layering
