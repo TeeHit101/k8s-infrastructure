@@ -21,6 +21,6 @@ spec:
   values:
     configMap:
       clusterConfig:
-        - clusterID: "YOUR_CEPH_FSID"
+        - clusterID: "2bc249e8-7b57-40d3-b80e-741a2e4c8722"
           monitors:
             - "YOUR_CEPH_MONITOR_IP:6789"
