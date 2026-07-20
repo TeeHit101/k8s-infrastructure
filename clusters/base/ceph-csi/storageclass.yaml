@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-csi-rbd-secret
+  namespace: ceph-csi
+type: Opaque
+stringData:
+  userID: k3s
+  userKey: "YOUR_CEPH_USER_KEY"
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: external-ceph-block
+provisioner: rbd.csi.ceph.com
+parameters:
+  clusterID: "YOUR_CEPH_FSID"
+  pool: k3s-pool
+  imageFormat: "2"
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: ceph-csi-rbd-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: ceph-csi
+  csi.storage.k8s.io/node-stage-secret-name: ceph-csi-rbd-secret
+  csi.storage.k8s.io/node-stage-secret-namespace: ceph-csi
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true

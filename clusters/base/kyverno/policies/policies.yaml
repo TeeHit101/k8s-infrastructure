@@ -48,7 +48,7 @@ spec:
           - resources:
               namespaces:
                 - kube-system
-                - longhorn-system
+                - ceph-csi
       validate:
         message: "Privileged containers are strictly forbidden in this cluster."
         pattern:
