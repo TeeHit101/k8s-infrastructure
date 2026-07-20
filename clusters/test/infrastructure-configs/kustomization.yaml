@@ -6,4 +6,3 @@ resources:
   - ../../../clusters/base/system-upgrade-controller/plans
   - metallb-config.yaml
   - grafana-ingress.yaml
-  - longhorn-ingress.yaml
